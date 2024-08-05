@@ -211,3 +211,97 @@ cols_to_keep = [col for col in list(df.columns) if col not in ['duplicate', 'coo
 df[cols_to_keep].to_csv("../data/BeetleMeasurements.csv", index = False)
 
 # %%
+
+# %% [markdown]
+# ## Re-open to Add Species and Update Column Names
+#
+# We'll add a species column to more easily identify those labeled only to the genus level. Additionally, we will standardize the column names: ID values will be camelCase and we'll set the remainder with underscores (there's a bit of variety, but NEON seems to use camelCase for the IDs (location & type of measurement): https://www.neonscience.org/data-samples/data-management/data-formats-conventions).
+
+# %%
+df = pd.read_csv("https://huggingface.co/datasets/imageomics/BeetlePalooza/resolve/190cfc9c71b813b8faa338d251d3d02ee8dc14a9/BeetleMeasurements.csv", low_memory = False)
+df.head()
+
+# %%
+import numpy as np
+
+# %%
+longer_sp_names = []
+
+def get_species(sciName):
+    if (type(sciName) != float) and ("sp." not in sciName):
+        names = sciName.split(" ")
+        if len(names) == 2:
+            return(names[1])
+        elif len(names) > 2:
+            longer_sp_names.append(sciName)
+            genus_ = names[0] + " "
+            return sciName.split(sep = genus_)[1]
+    return np.nan
+
+
+# %%
+df["species"] = df["scientificName"].apply(get_species)
+print(f"Among our 36 unique genera we have {df['species'].nunique()} unique species")
+print(f"There are {len(set(longer_sp_names))} species labels longer than one word; their scientific names are: {set(longer_sp_names)}")
+print(f"We have {df.loc[df['species'].isna(), 'individualID'].nunique()} individuals not labeled to the species level; {df.loc[(df['species'].isna()) & (df['scientificName'].isna()), 'individualID'].nunique()} of them don't even have a scientific name label.")
+
+# %%
+df.loc[(df["species"].isna()),"scientificName"].value_counts()
+
+
+# %%
+"Abacidus" in list(df["genus"].unique())
+
+# %% [markdown]
+# `Abacidus` seems to be a subgenus of `Pterostichus` ([ref](https://bugguide.net/node/view/1740293)). Those counts seem a bit low for the number of individuals in images...
+
+# %%
+"sp" in list(df["species"].unique())
+
+# %%
+"(" in list(df["species"].unique())
+
+# %%
+df["species"].isna().sum()
+
+# %% [markdown]
+# Total of 62 entries missing species, but it's only 27 individuals (it would seem), and we got one subgenus.
+
+# %%
+df.sample(7)
+
+# %%
+df.columns
+
+# %%
+df.rename(columns = {'PictureID': 'pictureID',
+                     'scale_dist_pix': 'cm_pix',        #this is number of pixels in a cm on the scalebar
+                     'lyingstraight': 'lying_straight',
+                     'NEON_sampleID_': 'NEON_sampleID',
+                     'workflow_id': 'workflowID',
+                     'field_site_name': 'site_name'
+                     },
+          inplace = True)
+df.head(2)
+
+# %% [markdown]
+# Now let's just move `species` to follow `genus` and we'll save this updated CSV.
+
+# %%
+col_list = list(df.columns)[:-1]
+col_list.insert(-2, "species")
+col_list
+
+# %%
+df[col_list].head(2)
+
+# %%
+df[col_list].to_csv("../data/BeetleMeasurements.csv", index = False)
+
+# %% [markdown]
+# Quick check, what's the scientific name of our sample image (use the image on [GitHub](https://github.com/Imageomics/BeetlePalooza-2024/blob/main/BeetleImage-A00000046094.jpg))?
+
+# %%
+df.loc[df["pictureID"] == "A00000046094.jpg", "scientificName"].values[0]
+
+# %%
