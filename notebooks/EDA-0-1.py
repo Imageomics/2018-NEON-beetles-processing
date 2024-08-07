@@ -218,7 +218,7 @@ df[cols_to_keep].to_csv("../data/BeetleMeasurements.csv", index = False)
 # We'll add a species column to more easily identify those labeled only to the genus level. Additionally, we will standardize the column names: ID values will be camelCase and we'll set the remainder with underscores (there's a bit of variety, but NEON seems to use camelCase for the IDs (location & type of measurement): https://www.neonscience.org/data-samples/data-management/data-formats-conventions).
 
 # %%
-df = pd.read_csv("https://huggingface.co/datasets/imageomics/BeetlePalooza/resolve/190cfc9c71b813b8faa338d251d3d02ee8dc14a9/BeetleMeasurements.csv", low_memory = False)
+df = pd.read_csv("BeetleMeasurements.csv", low_memory = False) #https://huggingface.co/datasets/imageomics/BeetlePalooza/resolve/190cfc9c71b813b8faa338d251d3d02ee8dc14a9/BeetleMeasurements.csv
 df.head()
 
 # %%
@@ -248,7 +248,6 @@ print(f"We have {df.loc[df['species'].isna(), 'individualID'].nunique()} individ
 # %%
 df.loc[(df["species"].isna()),"scientificName"].value_counts()
 
-
 # %%
 "Abacidus" in list(df["genus"].unique())
 
@@ -276,7 +275,7 @@ df.columns
 # %%
 df.rename(columns = {'PictureID': 'pictureID',
                      'scale_dist_pix': 'cm_pix',        #this is number of pixels in a cm on the scalebar
-                     'lyingstraight': 'lying_straight',
+                     'lyingstraight': 'lying_flat',     # this is actually about how flat they are on the lattice (vs rolled on the side; it can distort width measure)
                      'NEON_sampleID_': 'NEON_sampleID',
                      'workflow_id': 'workflowID',
                      'field_site_name': 'site_name'
@@ -285,11 +284,24 @@ df.rename(columns = {'PictureID': 'pictureID',
 df.head(2)
 
 # %% [markdown]
-# Now let's just move `species` to follow `genus` and we'll save this updated CSV.
+# Generate true `measureID` to give us a unique identifier for the dataset; this way we can merge with the inidividual CSV we'll create from Isadora's measurements. We'll also save the current `individualID` column as `combinedID`.
 
 # %%
-col_list = list(df.columns)[:-1]
+import uuid
+
+df.rename(columns = {'individualID': 'combinedID'}, inplace = True)
+
+df["measureID"] = [uuid.uuid4() for i in range(df.shape[0])]
+
+df.head()
+
+# %% [markdown]
+# Now let's just move `species` to follow `genus` and `measureID` to follow `combinedID`, then we'll save this updated CSV.
+
+# %%
+col_list = list(df.columns)[:-2]
 col_list.insert(-2, "species")
+col_list.insert(-1, "measureID")
 col_list
 
 # %%
@@ -297,6 +309,9 @@ df[col_list].head(2)
 
 # %%
 df[col_list].to_csv("../data/BeetleMeasurements.csv", index = False)
+
+# %%
+df["measureID"].nunique()
 
 # %% [markdown]
 # Quick check, what's the scientific name of our sample image (use the image on [GitHub](https://github.com/Imageomics/BeetlePalooza-2024/blob/main/BeetleImage-A00000046094.jpg))?
