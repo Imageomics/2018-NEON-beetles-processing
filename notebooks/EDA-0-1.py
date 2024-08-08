@@ -218,7 +218,7 @@ df[cols_to_keep].to_csv("../data/BeetleMeasurements.csv", index = False)
 # We'll add a species column to more easily identify those labeled only to the genus level. Additionally, we will standardize the column names: ID values will be camelCase and we'll set the remainder with underscores (there's a bit of variety, but NEON seems to use camelCase for the IDs (location & type of measurement): https://www.neonscience.org/data-samples/data-management/data-formats-conventions).
 
 # %%
-df = pd.read_csv("BeetleMeasurements.csv", low_memory = False) #https://huggingface.co/datasets/imageomics/BeetlePalooza/resolve/190cfc9c71b813b8faa338d251d3d02ee8dc14a9/BeetleMeasurements.csv
+df = pd.read_csv("https://huggingface.co/datasets/imageomics/BeetlePalooza/resolve/190cfc9c71b813b8faa338d251d3d02ee8dc14a9/BeetleMeasurements.csv", low_memory = False) 
 df.head()
 
 # %%
