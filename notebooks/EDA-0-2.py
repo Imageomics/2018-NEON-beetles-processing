@@ -148,6 +148,12 @@ dupe_meas_df = df.loc[df["dupe_record"]].copy()
 print(dupe_meas_df.shape)
 dupe_meas_df.nunique()
 
+# %%
+# what is the unique coords_pix?
+temp = dupe_meas_df.copy()
+temp["dupe_coords"] = temp.duplicated(subset = ["coords_pix"], keep = False)
+temp.loc[temp["dupe_coords"]]
+
 # %% [markdown]
 # Interesting. Most of the variation is coming from the coordinates of the elytra measurement lines. The `scalebar` coordinates are also inconsistent within the same pictures, but that may be due to annotator. We have 107 entries representing 38 individuals (which should have 76 unique entries between them, so this is likely still a subset of their total number of records).
 
@@ -185,6 +191,10 @@ dupe_meas_df.loc[dupe_meas_df["user_name"] == "ishachinniah", "practical_meas_du
 
 # %% [markdown]
 # Okay, so the practical duplicates (measures that are consistent in all but coordinate location of the lines) are all from one user.
+
+# %%
+dupe_meas_df["practical_meas_dupes_kept"] = df.duplicated(subset = potential_duplicate_meas, keep = "first")
+dupe_meas_df["practical_meas_dupes_kept"].value_counts()
 
 # %% [markdown]
 # ## Rough Comparison of Measurements
@@ -240,4 +250,133 @@ sns.scatterplot(df_meas, x = "elytraLength_cm", y = "elytraWidth_cm", hue = "spe
 df_meas["outliers"] = df_meas["elytraLength_pix"] < df_meas["elytraWidth_pix"]
 df_meas.loc[df_meas["outliers"]]
 
+# %% [markdown]
+# Isadora says the first one looks damaged, may lead to inconsistency. Looking at picture, the first one (`A00000046078_10`) is missing half the elytra (length-wise cut). `A00000046104_10` is just at an angle, length is definitely more than the width. We'll only be using Isadora's annotations anyway, so we'll just fix the first one (switch length and width) and not worry about the second.
+
 # %%
+df.loc[df["individualID"].isin(["A00000046078_10", "A00000046104_10"])]
+
+# %% [markdown]
+# Let's check on those other couple outliers...
+
+# %%
+df_meas.loc[(df_meas["elytraLength_cm"] > .7) & (df_meas["elytraWidth_cm"] < .2)]
+
+# %% [markdown]
+# This seems like a conversion error, also isn't part of annotations we'll be using.
+
+# %%
+df_meas.loc[(df_meas["elytraLength_cm"] > 1.7) & (df_meas["elytraWidth_cm"] < 1)]
+
+# %%
+df.loc[df["individualID"] == "A00000046075_1"]
+
+# %% [markdown]
+# These all seem pretty consistent, most likely natural fluctuation.
+
+# %% [markdown]
+# ### Save initial Measurement DataFrame with all Annotators for record
+
+# %%
+df_meas.to_csv("../metadata/all_measurements.csv", index = False)
+
+# %% [markdown]
+# ## IsaFluck: Zooniverse limits to 99 individuals per image then resets count 
+#
+# Ex: `A00000051542.jpg` has 122 individuals.
+#
+# Also note, the inconsistency between unique images and `NEON_sampleID` is due to (`RMNP_014.20180709.CALADV.01`); there were too many individuals in the sample for Isadora to organize them all in one picture. She placed them in two pictures: `A00000051555_1` and `A00000051555_2`.
+#
+#
+# To try to address the too many individuals for Zooniverse issue, we'll add a count of number of measurements per image. Note, we still know there are some duplicate measurements, so let's just get the number of lines per image and the largest `individual` number.
+#
+
+# %%
+meas_gp = df.groupby("pictureID")
+
+for picID, group in meas_gp:
+    if len(group)%2 != 0:
+        print(f"picture {picID} has an uneven number of measurements recorded")
+    df.loc[df["pictureID"] == picID, "num_pic_meas"] = len(group)
+    df.loc[df["pictureID"] == picID, "max_individual"] = max(list(df.loc[df["pictureID"] == picID, "individual"].unique()))
+    
+print(df["num_pic_meas"].value_counts())
+print("most meas: ", max(list(df["num_pic_meas"])), "least: ", min((list(df["num_pic_meas"]))))
+print()
+print("largest individual number recorded:")
+print(df["max_individual"].value_counts())
+print(f"least number of individuals in a single image: {min(list(df['max_individual']))}")
+
+# %% [markdown]
+# Least number of measurements does correspond to the least number of individuals in an image. The challenge will be with the larger ones. We need to see how many unique measurements there are looking at just each annotator.
+#
+# The best way to get a comparison would probably be to separate out the images where `max_individual < 99.0`, as we see below, the highest annotation count is for 214 annotations from each annotator (it seems maybe only a few had triple annotation, so we'll check on that then start splitting for comparison).
+
+# %%
+df.loc[df["num_pic_meas"] == 642.0].sample(2)
+
+# %%
+df.loc[df["num_pic_meas"] == 642.0, "user_name"].value_counts()
+
+# %%
+# check that one coords_pix dupe, since the only individual showing up is # 7:
+
+df.loc[df["pictureID"] == "A00000033675.jpg", "max_individual"].values[0]
+
+# %% [markdown]
+# Yes, this one does have an actual measure duplication. Let's check who annotated that individual to see if it's two annotators or just one.
+
+# %%
+dupe_ID = df.loc[df["individualID"] == "A00000033675_7"]
+dupe_ID[["scalebar", "cm_pix", "individual", "structure", "lying_straight", "coords_pix", "dist_pix", "dist_cm", "user_name"]]
+
+# %% [markdown]
+# Okay, the `coords_pix` duplication is two annotators marking the same line. Seems 2 out of 3 matched on the width of the elytra.
+
+# %% [markdown]
+# ### Compare Images with Multiple Annotators
+
+# %%
+multi_annotator = {}
+double_annotator = []
+
+for picID, group in meas_gp:
+    num_annotators = df.loc[df["pictureID"] == picID, "user_name"].nunique()
+    df.loc[df["pictureID"] == picID, "num_annotators"] = num_annotators
+    if num_annotators > 1:
+        multi_annotator[picID] = (df.loc[df["pictureID"] == picID, "max_individual"].values[0], df.loc[df["pictureID"] == picID, "num_pic_meas"].values[0])
+        if num_annotators == 2:
+            double_annotator.append(picID)
+
+print(len(multi_annotator.keys()))
+print(len(double_annotator))
+
+# %%
+double_annotator
+
+# %%
+multi_annotator[double_annotator[0]]
+
+# %%
+ma_df = pd.DataFrame(data = {"pictureID": multi_annotator.keys(),
+                             "max_individual": [multi_annotator[picID][0] for picID in multi_annotator.keys()],
+                             "num_annotators": [3 if picID != double_annotator[0] else 2 for picID in multi_annotator.keys()],
+                             "num_pic_meas": [multi_annotator[picID][1] for picID in multi_annotator.keys()]})
+
+ma_df.head()
+
+# %%
+ma_df["expected_num_meas"] = ma_df["num_pic_meas"]/ma_df["num_annotators"]
+ma_df.nunique()
+
+# %%
+print(max(list(ma_df["expected_num_meas"])), min(list(ma_df["expected_num_meas"])))
+
+# %% [markdown]
+# So this should contain images with as few as 1 and as many as 107 individuals.
+
+# %% [markdown]
+# ### Save this df for record
+
+# %%
+ma_df.to_csv("../metadata/multi_annotator_count.csv", index = False)
