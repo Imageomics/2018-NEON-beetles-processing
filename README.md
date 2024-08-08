@@ -3,12 +3,20 @@
 This repository hosts the code and notebooks used to explore and process the [BeetlePalooza](https://github.com/Imageomics/BeetlePalooza-2024/wiki) dataset: [2018 NEON Ethanol-preserved Ground Beetles](https://huggingface.co/datasets/imageomics/2018-NEON-beetles).
 
 
-## Getting Started
+## Data Exploration and Analysis
+
+### Getting Started
 
 In a fresh `python` environment, run:
 `pip install -r requirements.txt`.
 
 CSVs explored in the notebook are pulled directly from Huggingface through their URL (these are pointing to the particular commit for the version). Adjusted CSVs are saved to a `data/` folder which is ignored by `git` since they are too large (versioning requires `git lfs`, so they are stored on Hugging Face).
+
+### Notebooks
+
+ - EDA-0-1 gives an initial exploration of the data. It adds and renames some columns in the metadata file for the dataset.
+ - EDA-0-2 explores the variation in the measurements of individuals (provides graphs). It also checks the potential outliers and creates a measurement ID, providing a unique ID for the beetle measurement CSV.
+ - EDA-0-3 fixes the outliers that were mislabeled, then generates individual-based CSVs for segmentation and connection to the individual images to be created from the segmentation process. 
 
 
 ## Segmentation
