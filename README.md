@@ -18,6 +18,14 @@ CSVs explored in the notebook are pulled directly from Huggingface through their
  - EDA-0-2 explores the variation in the measurements of individuals (provides graphs). It also checks the potential outliers and creates a measurement ID, providing a unique ID for the beetle measurement CSV.
  - EDA-0-3 fixes the outliers that were mislabeled, then generates individual-based CSVs for segmentation and connection to the individual images to be created from the segmentation process. 
 
+### Metadata
+
+ - all_measurements is a CSV with all the measurements done by each annotator (each row is a pair of measurements for a single beetle).
+ - individual_metadata_full is a CSV with all the measurements done by Isadora Fluck (each row represents an individual beetle with its pair of elytra measurements). This was created for the segmentation process.
+ - multi_annotator_count is a CSV with counts of annotations per image, the expected number (based on the number of rows and annotators associated with that image), and the maximum `individual` number provided for that image (if `max_individual` is less than 99, that is the number of individuals in that image; if it's 99 or greater, then there may be more individuals based on the individual count and numeric export from Zooniverse).
+
+Note that `all_measurments.csv` and `individual_metadata_full.csv` are supersets of the `individual_metadata.csv` in [2018 NEON Ethanol-preserved Ground Beetles](https://huggingface.co/datasets/imageomics/2018-NEON-beetles) (they contributed to its creation from [`BeetleMeasurements.csv`](https://huggingface.co/datasets/imageomics/2018-NEON-beetles/blob/main/BeetleMeasurements.csv)), and are thus reproduced here under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license and should be [cited appropriately](https://huggingface.co/datasets/imageomics/2018-NEON-beetles#citation) if re-used.
+
 
 ## Segmentation
 
