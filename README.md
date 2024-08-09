@@ -17,6 +17,7 @@ CSVs explored in the notebook are pulled directly from Huggingface through their
  - EDA-0-1 gives an initial exploration of the data. It adds and renames some columns in the metadata file for the dataset.
  - EDA-0-2 explores the variation in the measurements of individuals (provides graphs). It also checks the potential outliers and creates a measurement ID, providing a unique ID for the beetle measurement CSV.
  - EDA-0-3 fixes the outliers that were mislabeled, then generates individual-based CSVs for segmentation and connection to the individual images to be created from the segmentation process. 
+ - EDA-0-4 adds "scientificName", "genus", "species", "NEON_sampleID", and "siteID" columns to the resized beetle metadata file to display alongside the resized images in the dataset viewer on HF.
 
 ### Metadata
 
