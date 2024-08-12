@@ -211,4 +211,41 @@ cols_to_keep = [col for col in list(df_ind_hf.columns) if col != "user_name"]
 # %%
 df_ind_hf[cols_to_keep].to_csv("../data/individual_metadata.csv", index = False)
 
+# %% [markdown]
+# # Add Full and Re-sized Image dimensions to individual full measurements for Segmentation
+#
+# Michelle added the resized dimensions to the Beetle Measurments CSV and we will add them to the full individual measurements CSV for easier segmentation processing.
+
+# %%
+# from commit 10f6ed40764864e1edc0c0022f66642367161606 on HF
+df = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/main/BeetleMeasurements.csv", low_memory = False)
+# from commit f22355e on GH
+df_ind = pd.read_csv("../metadata/individual_metadata_full.csv", low_memory=False)
+
+print(df.columns)
+print(df_ind.columns)
+
+# %%
+df.info()
+
+# %%
+df_ind.head()
+
+# %%
+for comboID in list(df_ind["combinedID"].unique()):
+    temp = df.loc[df["combinedID"] == comboID].copy()
+    if temp.shape[0] > 0:
+        df_ind.loc[df_ind["combinedID"] == comboID, "image_dim"] = temp["image_dim"].values[0]
+        df_ind.loc[df_ind["combinedID"] == comboID, "resized_image_dim"] = temp["resized_image_dim"].values[0]
+        df_ind.loc[df_ind["combinedID"] == comboID, "coords_pix_scaled_up"] = temp["coords_pix_scaled_up"].values[0]
+    else:
+        print(f"{comboID} missing")
+    
+df_ind.head()
+
+# %%
+# Save to CSV
+
+df_ind.to_csv("../metadata/individual_metadata_full.csv", index = False)
+
 # %%
