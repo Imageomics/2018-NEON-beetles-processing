@@ -243,6 +243,17 @@ for comboID in list(df_ind["combinedID"].unique()):
     
 df_ind.head()
 
+# %% [markdown]
+# We do need the `pictureID` for the segmentation, so let's add that back in.
+
+# %%
+for comboID in list(df_ind["combinedID"].unique()):
+    temp = df.loc[df["combinedID"] == comboID].copy()
+    if temp.shape[0] > 0:
+        df_ind.loc[df_ind["combinedID"] == comboID, "pictureID"] = temp["pictureID"].values[0]
+       
+df_ind.head()
+
 # %%
 # Save to CSV
 
