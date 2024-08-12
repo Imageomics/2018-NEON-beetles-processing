@@ -14,12 +14,13 @@ import ast
 
 from utils import load_dataset_images, read_image_paths
 
-def get_mask(image_path, predictor, beetle_measurements, annotator='IsaFluck'):
+def get_mask(image_path, predictor, beetle_df, annotator='IsaFluck'):
+    
     # get elytra length (even) and width line (odd) coords
     picture_id = image_path.split('/')[-1]
-    elytra_coords = beetle_measurements[(beetle_measurements.PictureID == picture_id) & 
-                                        (beetle_measurements.user_name == annotator)].coords_pix.tolist()
-
+    elytra_coords = beetle_df[(beetle_df.pictureID == picture_id) & 
+                            (beetle_df.user_name == annotator)].coords_pix_scaled_up.tolist()
+    
     # read in image
     image = cv2.imread(image_path, 1)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -36,10 +37,6 @@ def get_mask(image_path, predictor, beetle_measurements, annotator='IsaFluck'):
         # convert to actual dicts
         length_coords = ast.literal_eval(elytra_coords[i])
         width_coords = ast.literal_eval(elytra_coords[i+1])
-
-        #use length x1y1 to segment beetle since it will lie at ~ midpoint of beetle
-        # input_point = np.array([[length_coords['x1'], length_coords['y1']]])
-        # input_label = np.array([1])
 
         # use all available xy points to segment the beetle with SAM
         input_point = np.array([[length_coords['x1'], length_coords['y1']],
@@ -89,7 +86,7 @@ def batch_indices_np(total, batch_size):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--images", required=True, help="Directory containing images we want to predict masks for. ex: /User/micheller/BeetlePalooza/images")
+    parser.add_argument("--images", required=True, help="Directory containing images we want to predict masks for. ex: /User/micheller/BeetlePalooza/group_images")
     parser.add_argument("--csv", required=True, help="Path to CSV containing Elytra measurements for beetles. ex: /User/micheller/BeetlePalooza/BeetleMeasurements.csv")
     parser.add_argument("--results", required=False, default = 'segmentation_results.csv', help="Path to the csv created containing \
                         how many beetles were segmented in each image.")
@@ -113,8 +110,7 @@ def main():
         print('__CUDA Device Total Memory [GB]:',torch.cuda.get_device_properties(0).total_memory/1e9)
 
     # read beetle msmt csv in
-    beetle_measurements = pd.read_csv(args.csv)
-    beetle_measurements = beetle_measurements.drop(columns=['Unnamed: 0'])
+    beetle_df = pd.read_csv(args.csv)
     
     # read images in
     dataset_folder = args.images + '/*'
@@ -134,7 +130,7 @@ def main():
         print(fp)
 
         #create a mask where beetle pixels are 1s and everything else is 0s
-        mask, num_beetles = get_mask(fp, segmentation_model, beetle_measurements) 
+        mask, num_beetles = get_mask(fp, segmentation_model, beetle_df) 
         
         #create the path to which the mask will be saved
         mask_path = fp.replace(args.images, f'{args.images}_masks')
