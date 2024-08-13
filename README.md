@@ -48,5 +48,7 @@ To remove the background of beetle images using their segmentation masks run:
 To crop out individual beetles from images run:
 `python3 individual_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>`
 
+**FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly align to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
+
 
 
