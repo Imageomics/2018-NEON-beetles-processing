@@ -12,7 +12,7 @@ import argparse
 import wget
 import ast
 
-from utils import load_dataset_images, read_image_paths
+from utils import load_dataset_images, read_image_paths, get_sam_model
 
 def get_mask(image_path, predictor, beetle_df, annotator='IsaFluck'):
     
@@ -67,18 +67,6 @@ def get_mask(image_path, predictor, beetle_df, annotator='IsaFluck'):
     return img_mask, num_beetles
 
 
-def get_sam_model(device):
-    '''Get the SAM VIT l Model'''
-    model_type = "vit_l"
-    sam_checkpoint = "/home/ramirez.528/BeetlePalooza/sam_vit_l_0b3195.pth"
-    if not os.path.exists(sam_checkpoint):
-        model_url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth"
-        sam_checkpoint = wget.download(model_url)
-    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-    sam.to(device=device)
-    return SamPredictor(sam)
-
-
 def batch_indices_np(total, batch_size):
     indices = np.arange(total)
     return np.array_split(indices, np.ceil(total / batch_size))
@@ -121,7 +109,8 @@ def main():
     dataset_segmented = pd.DataFrame(columns = ['image', 'num_beetles'])
 
     # load SAM model
-    segmentation_model = get_sam_model(DEVICE)
+    sam = get_sam_model(DEVICE)
+    segmentation_model = SamPredictor(sam)
 
     # create masks using SAM (segment-anything-model)
     i = 0 #df indexer

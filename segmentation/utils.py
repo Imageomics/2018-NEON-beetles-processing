@@ -1,7 +1,13 @@
-import os
-import glob
+import torch
 import cv2
-import numpy as np
+import matplotlib.pyplot as plt
+from ultralytics import YOLO
+from segment_anything import sam_model_registry, SamPredictor
+import torch, torchvision
+import argparse
+import wget
+import ast
+import glob, os
 
 def load_dataset_images(dataset_path, color_option=0):
     '''Load in actual images from filepaths from all subfolders in the provided dataset_path'''
@@ -102,3 +108,14 @@ def load_batch_images(image_filepaths, color_option=0):
         return dataset_images
     
     return dataset_images
+
+def get_sam_model(device):
+    '''Get the SAM VIT l Model'''
+    model_type = "vit_l"
+    sam_checkpoint = "/home/ramirez.528/BeetlePalooza/sam_vit_l_0b3195.pth"
+    if not os.path.exists(sam_checkpoint):
+        model_url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth"
+        sam_checkpoint = wget.download(model_url)
+    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+    sam.to(device=device)
+    return sam

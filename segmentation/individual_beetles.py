@@ -11,6 +11,7 @@ import torch, torchvision
 import argparse
 import wget
 import ast
+from utils import get_sam_model
 
 def rescale_coordinates(old_x, old_y, old_width, old_height, new_width, new_height):
     # Calculate the scaling factors
@@ -66,17 +67,6 @@ def crop_image_with_opencv(image, bbox, padding=50):
     return cropped_image
 
 
-def get_sam_model(device):
-    '''Get the SAM VIT l Model'''
-    model_type = "vit_l"
-    sam_checkpoint = "/home/ramirez.528/BeetlePalooza/sam_vit_l_0b3195.pth"
-    if not os.path.exists(sam_checkpoint):
-        model_url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth"
-        sam_checkpoint = wget.download(model_url)
-    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-    sam.to(device=device)
-    return SamPredictor(sam)
-
 
 def batch_indices_np(total, batch_size):
     indices = np.arange(total)
@@ -108,7 +98,8 @@ def main():
 
     # read beetle msmt csv in
     individual_measurements = pd.read_csv(args.csv)
-    predictor = get_sam_model(DEVICE)
+    sam = get_sam_model(DEVICE)
+    predictor = SamPredictor(sam)
     errors = []
     for i, row in individual_measurements.iterrows():
         picture_id = row['pictureID']
