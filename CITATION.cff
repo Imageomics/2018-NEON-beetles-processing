@@ -1,0 +1,54 @@
+abstract: "This repository hosts the code and notebooks used to explore and process the [BeetlePalooza](https://github.com/Imageomics/BeetlePalooza-2024/wiki) dataset: [2018 NEON Ethanol-preserved Ground Beetles](https://huggingface.co/datasets/imageomics/2018-NEON-beetles)."
+authors:
+- family-names: Ramirez
+  given-names: Michelle
+  orcid: "https://orcid.org/0009-0008-8162-5729"
+- family-names: Campolongo
+  given-names: "Elizabeth G."
+  orcid: "https://orcid.org/0000-0003-0846-2413"
+cff-version: 1.2.0
+date-released: "2024-08-12"
+identifiers:
+  - description: "The GitHub release URL of tag 1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/2018-NEON-beetles-processing/releases/tag/v1.0.0"
+  - description: "The GitHub URL of the commit tagged with 1.0.0."
+    type: url
+    value: "https://github.com/Imageomics/2018-NEON-beetles-processing/tree/<commit-hash>" #update after relesase
+keywords:
+  - imageomics
+  - biology
+  - image
+  - animals
+  - CV
+  - segmentation
+  - EDA
+  - annotation
+  - beetles
+  - "elytra measurements"
+  - "body size"
+license: MIT
+message: "If you find this software helpful in your research, please cite both the software and data."
+repository-code: "https://github.com/Imageomics/2018-NEON-beetles-processing"
+title: "2018 NEON Ethanol-preserved Ground Beetles Processing"
+version: 1.0.0
+#doi: <DOI from Zenodo>
+type: software
+references:
+  - authors:
+      - family-names: Fluck
+        given-names: "Isadora E."
+      - family-names: Baiser
+        given-names: Benjamin
+      - family-names: Wolcheski
+        given-names: Riley
+      - family-names: Chinniah
+        given-names: Isha
+      - family-names: Record
+        given-names: Sydne
+    title: "2018 NEON Ethanol-preserved Ground Beetles"
+    #version:
+    type: dataset
+    #doi: 
+    url: "https://huggingface.co/datasets/imageomics/2018-NEON-beetles"
+    date-released: 2024
