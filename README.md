@@ -45,4 +45,8 @@ To predict segmentation masks for beetles imaged, run:
 To remove the background of beetle images using their segmentation masks run:
 `python3 remove_background.py --images <path to images> --masks <path to segmentation masks>`
 
+To crop out individual beetles from images run:
+`python3 individual_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>`
+
+
 
