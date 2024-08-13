@@ -56,3 +56,6 @@ python3 individual_beetles.py --images <path to group_images> --csv <path to met
 
 
 
+```
+python3 segment_elythra.py --images <path to images> --result <path to folder where results will be saved>
+```
