@@ -50,7 +50,7 @@ def get_bounding_boxes(masks):
     return bounding_boxes
 
 
-def crop_image_with_opencv(image, bbox, padding=0):
+def crop_image_with_opencv(image, bbox, padding=50):
     """
     Crop an image using OpenCV given a bounding box.
     
