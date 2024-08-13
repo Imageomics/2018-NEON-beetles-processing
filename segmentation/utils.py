@@ -9,6 +9,9 @@ import wget
 import ast
 import glob, os
 
+# saved local SAM checkpoint (same as URL)
+SAM_CHECKPOINT = "/home/ramirez.528/BeetlePalooza/sam_vit_l_0b3195.pth"
+
 def load_dataset_images(dataset_path, color_option=0):
     '''Load in actual images from filepaths from all subfolders in the provided dataset_path'''
 
@@ -112,7 +115,7 @@ def load_batch_images(image_filepaths, color_option=0):
 def get_sam_model(device):
     '''Get the SAM VIT l Model'''
     model_type = "vit_l"
-    sam_checkpoint = "/home/ramirez.528/BeetlePalooza/sam_vit_l_0b3195.pth"
+    sam_checkpoint = SAM_CHECKPOINT
     if not os.path.exists(sam_checkpoint):
         model_url = "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth"
         sam_checkpoint = wget.download(model_url)
