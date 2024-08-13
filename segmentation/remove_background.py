@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import argparse
 
-from utils import load_dataset_images
+from utils import load_dataset_images, get_sam_model
 
 def parse_args():
     parser = argparse.ArgumentParser()
