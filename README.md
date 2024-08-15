@@ -57,7 +57,7 @@ python3 individual_beetles.py --images <path to group_images> --csv <path to met
 
 ## Beetle detection
 
-For a more robust method with minimal input, we can use the (YOLO detector fine-tuned on beetle images)[https://huggingface.co/imageomics/yolo_beetle_detection/blob/main/yolo_beetles_best.pt] to detect and crop individuals.
+For a more robust method with minimal input, we can use the [YOLO detector fine-tuned on beetle images](https://huggingface.co/imageomics/yolo_beetle_detection/blob/main/yolo_beetles_best.pt) to detect and crop individuals.
 
 ```
 python3 yolo_crop_beetles.py --images <path to 2018-NEON-beetles/group_images> --output </home/ramirez.528/2018-NEON-beetles>
