@@ -28,7 +28,7 @@ CSVs explored in the notebook are pulled directly from Huggingface through their
 Note that `all_measurments.csv` and `individual_metadata_full.csv` are supersets of the `individual_metadata.csv` in [2018 NEON Ethanol-preserved Ground Beetles](https://huggingface.co/datasets/imageomics/2018-NEON-beetles) (they contributed to its creation from [`BeetleMeasurements.csv`](https://huggingface.co/datasets/imageomics/2018-NEON-beetles/blob/main/BeetleMeasurements.csv)), and are thus reproduced here under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license and should be [cited appropriately](https://huggingface.co/datasets/imageomics/2018-NEON-beetles#citation) if re-used.
 
 
-## Segmentation
+## Segmentation + Cropping (Relies on Elytra length and width coordinates!)
 
 The segmentation folder contains scripts to leverage the elytra length and width coordinates and Meta's Segment-Anything model to segment beetles out. 
 
@@ -39,8 +39,8 @@ conda env create --file environment.yaml
 conda activate beetles
 ```
 
-To predict segmentation masks for beetles imaged, run:
-`python3 predict_masks.py --images <path to images> --csv <path to image metadata csv> --results <optional; name for csv of segmentation results>`
+To predict segmentation masks using the elytra length and width coordinates for beetles imaged, run:
+`python3 coords_predict_masks.py --images <path to images> --csv <path to image metadata csv> --results <optional; name for csv of segmentation results>`
 
 To remove the background of beetle images using their segmentation masks run:
 ```
