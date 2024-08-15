@@ -47,12 +47,12 @@ To remove the background of beetle images using their segmentation masks run:
 python3 remove_background.py --images <path to images> --masks <path to segmentation masks>
 ```
 
-To crop out individual beetles from images run:
+To crop out individual beetles from images using the elytra length and width coords in metadata/individual_metadata_full.csv, run:
 ```
-python3 individual_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>
+python3 coords_crop_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>
 ```
 
-**FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly align to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
+**FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly aligned to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
 
 
 ## Beetle detection
