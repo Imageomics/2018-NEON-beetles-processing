@@ -55,7 +55,7 @@ python3 individual_beetles.py --images <path to group_images> --csv <path to met
 **FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly align to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
 
 
-### Beetle detection
+## Beetle detection
 
 For a more robust method with minimal input, we can use the (YOLO detector fine-tuned on beetle images)[https://huggingface.co/imageomics/yolo_beetle_detection/blob/main/yolo_beetles_best.pt] to detect and crop individuals.
 
@@ -65,6 +65,7 @@ python3 yolo_crop_beetles.py --images <path to 2018-NEON-beetles/group_images> -
 
 This method, unlike the individual_beetles.py script above, does not require any coordinates as input to crop down to the individual beetles. Images are saved in an overall individual_images folder, with subfolders named after the corresponding group picture ID containing the individual beetle and scale bar images. The structure is as follows:
 
+```
 individual_images
   |
   |
@@ -81,3 +82,4 @@ individual_images
   |             |-------- <beetle_i+2.jpg>
   |             |-------- <...>
   |             |-------- <scale_bar_n.jpg>
+  ```
