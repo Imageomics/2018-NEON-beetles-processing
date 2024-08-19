@@ -28,7 +28,7 @@ CSVs explored in the notebook are pulled directly from Huggingface through their
 Note that `all_measurments.csv` and `individual_metadata_full.csv` are supersets of the `individual_metadata.csv` in [2018 NEON Ethanol-preserved Ground Beetles](https://huggingface.co/datasets/imageomics/2018-NEON-beetles) (they contributed to its creation from [`BeetleMeasurements.csv`](https://huggingface.co/datasets/imageomics/2018-NEON-beetles/blob/main/BeetleMeasurements.csv)), and are thus reproduced here under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license and should be [cited appropriately](https://huggingface.co/datasets/imageomics/2018-NEON-beetles#citation) if re-used.
 
 
-## Segmentation
+## Segmentation + Cropping (Relies on Elytra length and width coordinates!)
 
 The segmentation folder contains scripts to leverage the elytra length and width coordinates and Meta's Segment-Anything model to segment beetles out. 
 
@@ -39,20 +39,47 @@ conda env create --file environment.yaml
 conda activate beetles
 ```
 
-To predict segmentation masks for beetles imaged, run:
-`python3 predict_masks.py --images <path to images> --csv <path to image metadata csv> --results <optional; name for csv of segmentation results>`
+To predict segmentation masks using the elytra length and width coordinates for beetles imaged, run:
+`python3 coords_predict_masks.py --images <path to images> --csv <path to image metadata csv> --results <optional; name for csv of segmentation results>`
 
 To remove the background of beetle images using their segmentation masks run:
 ```
 python3 remove_background.py --images <path to images> --masks <path to segmentation masks>
 ```
 
-To crop out individual beetles from images run:
+To crop out individual beetles from images using the elytra length and width coords in metadata/individual_metadata_full.csv, run:
 ```
-python3 individual_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>
+python3 coords_crop_beetles.py --images <path to group_images> --csv <path to metadata/individual_metadata_full.csv>
 ```
 
-**FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly align to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
+**FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly aligned to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
 
 
+## Beetle detection
 
+For a more robust method with minimal input, we can use the [YOLO detector fine-tuned on beetle images](https://huggingface.co/imageomics/yolo_beetle_detection/blob/main/yolo_beetles_best.pt) to detect and crop individuals.
+
+```
+python3 yolo_crop_beetles.py --images <path to 2018-NEON-beetles/group_images> --output </home/ramirez.528/2018-NEON-beetles>
+```
+
+This method, unlike the individual_beetles.py script above, does not require any coordinates as input to crop down to the individual beetles. Images are saved in an overall individual_images folder, with subfolders named after the corresponding group picture ID containing the individual beetle and scale bar images. The structure is as follows:
+
+```
+individual_images
+  |
+  |
+  |------- <pictureID 1>
+  |             |
+  |             |-------- <beetle_1.jpg>
+  |             |-------- <beetle_2.jpg>
+  |             |-------- <...>
+  |             |-------- <scale_bar_i.jpg>
+  |
+  |------- <pictureID 2>
+  |             |
+  |             |-------- <beetle_i+1.jpg>
+  |             |-------- <beetle_i+2.jpg>
+  |             |-------- <...>
+  |             |-------- <scale_bar_n.jpg>
+  ```
