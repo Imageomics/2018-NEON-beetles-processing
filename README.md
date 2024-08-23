@@ -56,7 +56,7 @@ python3 individual_beetles.py --images <path to group_images> --csv <path to met
 
 To remove the background from the individual images, run:
 ```
-python3 segment_beetle.py --images <path to group_images> --result <path to folder where results will be saved>
+python3 remove_individual_background.py --images <path to group_images> --result <path to folder where results will be saved>
 ```
 
 
