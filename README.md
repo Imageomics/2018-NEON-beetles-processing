@@ -55,7 +55,7 @@ python3 individual_beetles.py --images <path to group_images> --csv <path to met
 **FYI**: The script to crop out individual beetles works well for the images that have coords_pix_length and coords_pix_width information correctly align to beetles. However, there are a couple images where this is not the case, and thus the segmentation of beetles will not result in a nice crop of the individual beetles.
 
 
-
+To crop out elytra from the individual images, run:
 ```
 python3 segment_elythra.py --images <path to images> --result <path to folder where results will be saved>
 ```
