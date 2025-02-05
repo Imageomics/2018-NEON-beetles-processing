@@ -26,10 +26,7 @@ output_directory = "D:/University/RA/Beetle_Palooza/Data/separate_images/"
 ```
 
 ### 2. Run the Script  
-Execute the script to process images:  
-```bash
-python process_beetles.py
-```
+Execute the script in the notebook mentioned above to process images:  
 
 ## Code Overview  
 
