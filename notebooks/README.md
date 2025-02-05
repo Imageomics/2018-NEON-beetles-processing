@@ -1,6 +1,6 @@
 # Beetle Image Processing  
 
-This repository contains a Python script for processing beetle images collected from the 2018 NEON dataset. The script loads images, applies preprocessing, detects beetles using contour detection, and extracts individual beetle images while filtering out images with excessive blue color.
+The code in ```Beetle_Palooza_image_separation.ipynb``` contains a Python script for processing beetle images collected from the 2018 NEON dataset. The script loads images, applies preprocessing, detects beetles using contour detection, and extracts individual beetle images while filtering out images with excessive blue color.
 
 ## Features  
 - Loads images from a specified directory  
