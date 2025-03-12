@@ -22,13 +22,13 @@ import pandas as pd
 # The viewer likely needs unique rows per image for the full-sized images (`group_images`, assuming it's not truly limited by their size) and we want to add more info to the file for the resized images so they can be viewed by `genus`, `species`, `NEON_sampleID`, and `siteID`
 
 # %%
-# at commit 0420eb8c5d582b83220f16aa2f11f36e2e832674
-df = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/main/BeetleMeasurements_resized.csv", low_memory = False)
+# get metadata from HF
+df = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/0420eb8c5d582b83220f16aa2f11f36e2e832674/BeetleMeasurements_resized.csv", low_memory = False)
 df.head()
 
 # %%
-# at commit 54c160e18d3032e4f13003691bb514db4eef4ece
-df_detail = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/main/BeetleMeasurements.csv", low_memory = False)
+# get metadata from HF
+df_detail = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/54c160e18d3032e4f13003691bb514db4eef4ece/BeetleMeasurements.csv", low_memory = False)
 df_detail.head(2)
 
 # %%
@@ -51,15 +51,15 @@ df.to_csv("../data/BeetleMeasurements_resized.csv", index = False)
 # %% [markdown]
 # ## Update `group_images` and `group_images_masks` Metadata
 #
-# Run [sum-buddy](https://github.com/Imageomics/sum-buddy) for folder image contents information.
+# Run [sum-buddy](https://github.com/Imageomics/sum-buddy) for folder image contents information (run at root of repo, relative path to local copy of [HF repo](https://huggingface.co/datasets/imageomics/2018-NEON-beetles)).
 # ```console
 # sum-buddy --output-file metadata/group_images_sb.csv ../2018-NEON-beetles/group_images
 # sum-buddy --output-file metadata/group_images_masks_sb.csv ../2018-NEON-beetles/group_images_masks
 # ```
 
 # %%
-# at commit 10f6ed40764864e1edc0c0022f66642367161606
-meta_df = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/main/BeetleMeasurements.csv", low_memory=False)
+# Get metadata for images
+meta_df = pd.read_csv("https://huggingface.co/datasets/imageomics/2018-NEON-beetles/resolve/10f6ed40764864e1edc0c0022f66642367161606/BeetleMeasurements.csv", low_memory=False)
 meta_df.head(2)
 
 # %%
@@ -110,7 +110,7 @@ gp_meta_cleaned.loc[gp_meta_cleaned["pictureID"].isna()]
 meta_df.loc[meta_df["pictureID"] == "A0000006924.jpg"]
 
 # %% [markdown]
-# Actually, found the image. Its ID should be `A00000069245.jpg`. We'll rename this image and update the file.
+# Actually, found the image in the folder. Opened the image, its ID should be `A00000069245.jpg`, as the ID comes from the tube the beetles were in and `A00000069245` is the code on the tube label. We'll rename this image and update the file.
 
 # %%
 gp_df.loc[gp_df["filename"] == "A00000006924.jpg"] = "A00000069245.jpg"
@@ -141,6 +141,8 @@ gp_meta_cleaned["subset"] = "group_images"
 
 # %% [markdown]
 # ### Save `group_images` metadata
+#
+# Use relative path to local copy of [HF repo](https://huggingface.co/datasets/imageomics/2018-NEON-beetles).
 
 # %%
 gp_meta_cleaned.to_csv("../../2018-NEON-beetles/group_images/metadata.csv", index = False)
@@ -204,6 +206,8 @@ gp_m_meta_cleaned["subset"] = "group_images_masks"
 
 # %% [markdown]
 # #### Save `group_images_masks` metadata file
+#
+# Use relative path to local copy of [HF repo](https://huggingface.co/datasets/imageomics/2018-NEON-beetles).
 
 # %%
 gp_m_meta_cleaned.to_csv("../../2018-NEON-beetles/group_images_masks/metadata.csv", index = False)
