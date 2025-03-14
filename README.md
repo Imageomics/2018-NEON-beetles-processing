@@ -14,14 +14,17 @@ CSVs explored in the notebook are pulled directly from Huggingface through their
 
 ### Notebooks
 
+Note: The first two notebooks are exploratory, but 0-3 and 0-4 are largely data curation, not exploration. Each notebook has a paired `py` file generated using `jupytext`.
+
  - EDA-0-1 gives an initial exploration of the data. It adds and renames some columns in the metadata file for the dataset.
  - EDA-0-2 explores the variation in the measurements of individuals (provides graphs). It also checks the potential outliers and creates a measurement ID, providing a unique ID for the beetle measurement CSV.
  - EDA-0-3 fixes the outliers that were mislabeled, then generates individual-based CSVs for segmentation and connection to the individual images to be created from the segmentation process. 
- - EDA-0-4 adds "scientificName", "genus", "species", "NEON_sampleID", and "siteID" columns to the resized beetle metadata file to display alongside the resized images in the dataset viewer on HF.
+ - EDA-0-4 adds "scientificName", "genus", "species", "NEON_sampleID", and "siteID" columns to the resized beetle metadata file to display alongside the resized images in the dataset viewer on HF. Also, adds metadata files for `group_images` and `group_images_masks` for the dataset viewer and fixes a mis-labeled image.
 
 ### Metadata
 
  - all_measurements is a CSV with all the measurements done by each annotator (each row is a pair of measurements for a single beetle).
+ - group_images_sb and group_images_masks_sb are intermediate CSVs generated to align metadata files for the dataset viewer for those folders in the [2018-NEON-beetles Dataset](https://huggingface.co/datasets/imageomics/2018-NEON-beetles). They were generated using [sum-buddy](https://github.com/Imageomics/sum-buddy/) as described in `EDA-0-4.ipynb`.
  - individual_metadata_full is a CSV with all the measurements done by Isadora Fluck (each row represents an individual beetle with its pair of elytra measurements). This was created for the segmentation process.
  - multi_annotator_count is a CSV with counts of annotations per image, the expected number (based on the number of rows and annotators associated with that image), and the maximum `individual` number provided for that image (if `max_individual` is less than 99, that is the number of individuals in that image; if it's 99 or greater, then there may be more individuals based on the individual count and numeric export from Zooniverse).
 
