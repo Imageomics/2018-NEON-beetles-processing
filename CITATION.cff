@@ -6,11 +6,14 @@ authors:
 - family-names: Nepovinnykh
   given-names: Ekaterina
   orcid: "https://orcid.org/0000-0002-5045-5041"
+- family-names: Ali
+  given-names: Sarwan
+  orcid: "https://orcid.org/0000-0001-8121-2168"
 - family-names: Campolongo
   given-names: "Elizabeth G."
   orcid: "https://orcid.org/0000-0003-0846-2413"
 cff-version: 1.2.0
-date-released: "2024-08-12"
+date-released: "2025-08-28"
 keywords:
   - imageomics
   - biology
@@ -27,7 +30,7 @@ license: MIT
 message: "If you find this software helpful in your research, please cite both the software and data."
 repository-code: "https://github.com/Imageomics/2018-NEON-beetles-processing"
 title: "2018 NEON Ethanol-preserved Ground Beetles Processing"
-version: 1.0.0
+version: 2.0.0
 #doi: <DOI from Zenodo>
 type: software
 references:
@@ -45,6 +48,6 @@ references:
     title: "2018 NEON Ethanol-preserved Ground Beetles"
     #version:
     type: dataset
-    #doi: 
+    doi: "10.57967/hf/5252"
     url: "https://huggingface.co/datasets/imageomics/2018-NEON-beetles"
-    date-released: 2024
+    date-released: 2025
