@@ -31,7 +31,7 @@ message: "If you find this software helpful in your research, please cite both t
 repository-code: "https://github.com/Imageomics/2018-NEON-beetles-processing"
 title: "2018 NEON Ethanol-preserved Ground Beetles Processing"
 version: 2.0.0
-#doi: <DOI from Zenodo>
+doi: "10.5281/zenodo.16989738"
 type: software
 references:
   - authors:
